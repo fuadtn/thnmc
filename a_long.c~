@@ -34,8 +34,7 @@ int main(int argc, char* argv[])
 
 	b_int a, b, m;
 	long int len_max, i;
-	FILE *fp_a = NULL, *fp_b = NULL, *fp_m = NULL;
-	
+	FILE *fp_a = NULL, *fp_b = NULL, *fp_m;
 	fp_a = fopen(argv[1], "r");
 	fp_b = fopen(argv[3], "r");
 	if(argv[6] != NULL)
@@ -59,7 +58,6 @@ int main(int argc, char* argv[])
 	b.length = ftell(fp_b) - 1 - b.flag;
 	fseek(fp_b, 0, SEEK_SET);
 	
-	m.length = 2147483647;
 	if(fp_m != NULL)
 	{
 		fseek(fp_m, 0, SEEK_END);
@@ -96,13 +94,6 @@ int main(int argc, char* argv[])
 	b.digit[i] = fgetc(fp_b) - b5;
 	for(i = m.length - 1; i >= 0; i--)
 	m.digit[i] = fgetc(fp_m) - b5;
-
-	fclose(fp_a);
-	fclose(fp_b);
-	if(fp_m != NULL)
-	{
-		fclose(fp_m);
-	}
 
 // Выбор действия_____________________________________________________________
 	if(strcmp(argv[2],"+") == 0 || strcmp(argv[2],"-") == 0)
@@ -230,8 +221,6 @@ int a_mod(b_int &a, b_int &b, long int len_max)
 {
 	if(len_max < b.length)
 	return 0;
-//	printf("zashel vce taki %d %d\t", b.length, len_max);
-//	return 0;
 	while(s_cmp(a, b, len_max - b.length) != 2)
 	{
 		s_sub(a, b, len_max);
@@ -243,8 +232,7 @@ int a_mod(b_int &a, b_int &b, long int len_max)
 int a_pow(b_int &a, b_int &b, char *binf, char *fresult, b_int &m)
 {
 	b_int c, c_r;
-	long int i, tmp;
-	
+	long int i;
 
 	if(a.flag == 1 && (b.digit[0] % 2) == 1) c_r.flag = 1;
 	else c_r.flag = 0;	
@@ -257,14 +245,14 @@ int a_pow(b_int &a, b_int &b, char *binf, char *fresult, b_int &m)
 	}
 	
 	c_r.length = 1;
-//	for(i = 0; i < b.length; i++)
-//	c_r.length *= 10;
-	c_r.length = 100000; //*= a.length;
+	for(i = 0; i < b.length; i++)
+	c_r.length *= 10;
+	c_r.length 100000;//*= a.length;
 	c.length = c_r.length;
 
 	c.digit = (short *) calloc(c.length, sizeof(short));
 	c_r.digit = (short *) calloc(c.length, sizeof(short));
-
+	
 	if(c.digit == NULL || c_r.digit == NULL)
 	{
 		printf("ERROR OF MEMORY ALLOCATION");
@@ -275,9 +263,6 @@ int a_pow(b_int &a, b_int &b, char *binf, char *fresult, b_int &m)
 	while(s_null(b) != 0)
 	{
 		a_mul(c_r, c, a);
-//		tmp = m.length;
-//		a_mod(c_r, m, c_r.length);
-//		m.length = tmp;
 		s_copy(c, c_r);
 	}
 //	a_mod(c_r, m, c_r.length);
